@@ -74,7 +74,7 @@ SELECT ... FROM (SELECT ...) ...;
 ```
 ## Notes
 
-This project is composed in a rush, so there are likely having some potential bugs I have not tested. Feel free to submit them in issue. I will fix them if I am avalible.
+This project is composed in a rush, so there are likely some potential bugs I have not tested. Feel free to submit them in issue. I will fix them if I am avalible.
 
 I may improve some functions in the future.
 
