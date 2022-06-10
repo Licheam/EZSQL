@@ -1,6 +1,6 @@
 # EZSQL
 
-An very simple and eazy sql written in the course of the Principle of Compiler.
+An very simple and easy sql written in the course of the Principle of Compiler.
 
 ## Requirements
 
