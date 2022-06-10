@@ -48,9 +48,13 @@ There is something that you need to fix manually. You need to put the following 
 ## Syntax Supported
 
 There are only 2 types supported: INT and CHAR(1~255).
+
 CHAR(x) is only allow in one format: '[VALUES]' (always wrap with single quotes)
+
 Supports recursive math calculations like +, -, *, /, -(Unary minus).
+
 Supports recursive compare calculations like <, >, >=, <=, !=, <>, =.
+
 Supports recursive logic calculations like AND, OR, NOT.
 
 ```sql
