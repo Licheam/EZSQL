@@ -1,13 +1,14 @@
 CXX=g++
 CXXFLAGS= -std=c++17 -Wall
 
-main: main.cpp lex.yy.c y.tab.o utils.o database.o table.o
-	g++ -o main main.cpp lex.yy.c y.tab.o utils.o database.o table.o
+main: main.cpp lex.yy.c y.tab.o utils.o database.o table.o condition.o
+	g++ -o main main.cpp lex.yy.c y.tab.o utils.o database.o table.o condition.o
 
 database.o: database.cpp database.h
 table.o: table.h
 
 utils.o: utils.cpp utils.h
+condition.o: condition.h
 
 lex.yy.c: ezsql.l
 	lex ezsql.l

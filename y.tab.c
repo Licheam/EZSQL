@@ -72,6 +72,7 @@
 #include <list>
 #include "database.h"
 #include "table.h"
+#include "condition.h"
 #include "utils.h"
 
 using namespace std;
@@ -83,7 +84,7 @@ void yyerror(const char *str){
 }
 
 
-#line 87 "y.tab.c"
+#line 88 "y.tab.c"
 
 # ifndef YY_CAST
 #  ifdef __cplusplus
@@ -202,7 +203,7 @@ extern int yydebug;
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 17 "ezsql.y"
+#line 18 "ezsql.y"
 
 	char *str;
     int num;
@@ -211,8 +212,10 @@ union YYSTYPE
     std::list<std::string> *strlist;
     char *data;
     std::list<char *> *datas;
+    condition *cond;
+    table *tbl;
 
-#line 216 "y.tab.c"
+#line 219 "y.tab.c"
 
 };
 typedef union YYSTYPE YYSTYPE;
@@ -277,24 +280,32 @@ enum yysymbol_kind_t
   YYSYMBOL_42_ = 42,                       /* '('  */
   YYSYMBOL_43_ = 43,                       /* ')'  */
   YYSYMBOL_44_ = 44,                       /* ','  */
-  YYSYMBOL_YYACCEPT = 45,                  /* $accept  */
-  YYSYMBOL_start = 46,                     /* start  */
-  YYSYMBOL_line = 47,                      /* line  */
-  YYSYMBOL_statements = 48,                /* statements  */
-  YYSYMBOL_statement = 49,                 /* statement  */
-  YYSYMBOL_createdb = 50,                  /* createdb  */
-  YYSYMBOL_dropdb = 51,                    /* dropdb  */
-  YYSYMBOL_showdb = 52,                    /* showdb  */
-  YYSYMBOL_usedb = 53,                     /* usedb  */
-  YYSYMBOL_createtbl = 54,                 /* createtbl  */
-  YYSYMBOL_droptbl = 55,                   /* droptbl  */
-  YYSYMBOL_showtbl = 56,                   /* showtbl  */
-  YYSYMBOL_nametypes = 57,                 /* nametypes  */
-  YYSYMBOL_nametype = 58,                  /* nametype  */
-  YYSYMBOL_tblinsert = 59,                 /* tblinsert  */
-  YYSYMBOL_names = 60,                     /* names  */
-  YYSYMBOL_vals = 61,                      /* vals  */
-  YYSYMBOL_val = 62                        /* val  */
+  YYSYMBOL_45_ = 45,                       /* '.'  */
+  YYSYMBOL_YYACCEPT = 46,                  /* $accept  */
+  YYSYMBOL_start = 47,                     /* start  */
+  YYSYMBOL_line = 48,                      /* line  */
+  YYSYMBOL_statements = 49,                /* statements  */
+  YYSYMBOL_statement = 50,                 /* statement  */
+  YYSYMBOL_createdb = 51,                  /* createdb  */
+  YYSYMBOL_dropdb = 52,                    /* dropdb  */
+  YYSYMBOL_showdb = 53,                    /* showdb  */
+  YYSYMBOL_usedb = 54,                     /* usedb  */
+  YYSYMBOL_createtbl = 55,                 /* createtbl  */
+  YYSYMBOL_droptbl = 56,                   /* droptbl  */
+  YYSYMBOL_showtbl = 57,                   /* showtbl  */
+  YYSYMBOL_nametypes = 58,                 /* nametypes  */
+  YYSYMBOL_nametype = 59,                  /* nametype  */
+  YYSYMBOL_tblinsert = 60,                 /* tblinsert  */
+  YYSYMBOL_names = 61,                     /* names  */
+  YYSYMBOL_vals = 62,                      /* vals  */
+  YYSYMBOL_val = 63,                       /* val  */
+  YYSYMBOL_selecttbl = 64,                 /* selecttbl  */
+  YYSYMBOL_temptbl = 65,                   /* temptbl  */
+  YYSYMBOL_cal = 66,                       /* cal  */
+  YYSYMBOL_conditions = 67,                /* conditions  */
+  YYSYMBOL_condition = 68,                 /* condition  */
+  YYSYMBOL_condtype = 69,                  /* condtype  */
+  YYSYMBOL_compare = 70                    /* compare  */
 };
 typedef enum yysymbol_kind_t yysymbol_kind_t;
 
@@ -411,7 +422,7 @@ typedef int yytype_uint16;
 
 
 /* Stored state numbers (used for stacks). */
-typedef yytype_int8 yy_state_t;
+typedef yytype_uint8 yy_state_t;
 
 /* State numbers in computations.  */
 typedef int yy_state_fast_t;
@@ -620,18 +631,18 @@ union yyalloc
 #endif /* !YYCOPY_NEEDED */
 
 /* YYFINAL -- State number of the termination state.  */
-#define YYFINAL  27
+#define YYFINAL  35
 /* YYLAST -- Last index in YYTABLE.  */
-#define YYLAST   70
+#define YYLAST   150
 
 /* YYNTOKENS -- Number of terminals.  */
-#define YYNTOKENS  45
+#define YYNTOKENS  46
 /* YYNNTS -- Number of nonterminals.  */
-#define YYNNTS  18
+#define YYNNTS  25
 /* YYNRULES -- Number of rules.  */
-#define YYNRULES  34
+#define YYNRULES  68
 /* YYNSTATES -- Number of states.  */
-#define YYNSTATES  73
+#define YYNSTATES  133
 
 /* YYMAXUTOK -- Last valid token kind.  */
 #define YYMAXUTOK   288
@@ -652,7 +663,7 @@ static const yytype_int8 yytranslate[] =
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
-      42,    43,    38,    36,    44,    37,     2,    39,     2,     2,
+      42,    43,    38,    36,    44,    37,    45,    39,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,    41,
       32,    30,    31,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
@@ -681,12 +692,15 @@ static const yytype_int8 yytranslate[] =
 
 #if YYDEBUG
 /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
-static const yytype_uint8 yyrline[] =
+static const yytype_int16 yyrline[] =
 {
-       0,    49,    49,    50,    53,    54,    57,    58,    61,    62,
-      63,    64,    65,    66,    67,    68,    73,    78,    83,    88,
-      93,    98,   103,   108,   112,   118,   123,   130,   133,   138,
-     142,   148,   152,   158,   161
+       0,    54,    54,    55,    58,    59,    62,    63,    66,    67,
+      68,    69,    70,    71,    72,    73,    74,    79,    84,    89,
+      94,    99,   104,   109,   114,   118,   124,   129,   136,   139,
+     144,   148,   154,   158,   164,   167,   172,   177,   182,   188,
+     192,   197,   201,   206,   209,   213,   218,   219,   220,   221,
+     222,   223,   224,   227,   234,   241,   242,   249,   254,   263,
+     269,   275,   281,   289,   290,   291,   292,   293,   294
 };
 #endif
 
@@ -707,10 +721,12 @@ static const char *const yytname[] =
   "INTO", "VALUES", "DELETE", "FROM", "WHERE", "SET", "UPDATE", "SELECT",
   "EXIT", "NEWLINE", "INT", "ID", "STRING", "CHAR", "NUMBER", "OR", "AND",
   "NOT", "'='", "'>'", "'<'", "NOTLESS", "NOTGREATER", "NOTEQUAL", "'+'",
-  "'-'", "'*'", "'/'", "UMINUS", "';'", "'('", "')'", "','", "$accept",
-  "start", "line", "statements", "statement", "createdb", "dropdb",
-  "showdb", "usedb", "createtbl", "droptbl", "showtbl", "nametypes",
-  "nametype", "tblinsert", "names", "vals", "val", YY_NULLPTR
+  "'-'", "'*'", "'/'", "UMINUS", "';'", "'('", "')'", "','", "'.'",
+  "$accept", "start", "line", "statements", "statement", "createdb",
+  "dropdb", "showdb", "usedb", "createtbl", "droptbl", "showtbl",
+  "nametypes", "nametype", "tblinsert", "names", "vals", "val",
+  "selecttbl", "temptbl", "cal", "conditions", "condition", "condtype",
+  "compare", YY_NULLPTR
 };
 
 static const char *
@@ -720,7 +736,7 @@ yysymbol_name (yysymbol_kind_t yysymbol)
 }
 #endif
 
-#define YYPACT_NINF (-42)
+#define YYPACT_NINF (-67)
 
 #define yypact_value_is_default(Yyn) \
   ((Yyn) == YYPACT_NINF)
@@ -734,14 +750,20 @@ yysymbol_name (yysymbol_kind_t yysymbol)
    STATE-NUM.  */
 static const yytype_int8 yypact[] =
 {
-       5,     6,    -9,    20,    24,    11,   -42,     1,   -42,    14,
-     -42,   -42,   -42,   -42,   -42,   -42,   -42,   -42,   -42,     4,
-      19,     2,     3,     7,    22,    23,    26,   -42,   -42,   -42,
-     -42,     9,    10,   -42,   -42,   -42,    12,    13,   -13,   -42,
-      28,   -42,   -42,    15,    32,    -1,   -41,   -42,     8,   -42,
-      -7,   -42,   -42,    17,    28,   -42,   -42,    -5,   -42,    34,
-      33,   -42,   -42,    18,     8,    21,   -42,   -42,   -42,     8,
-      -3,    25,   -42
+      12,    37,    16,    99,   101,    64,    15,   -67,   -17,     3,
+     -67,    56,   -67,   -67,   -67,   -67,   -67,   -67,   -67,   -67,
+     -67,   -67,    39,    67,    68,    73,    78,    79,    76,    89,
+      98,   -67,    81,    -4,    80,   -67,   -67,   -67,   -67,   -67,
+      83,    84,   -67,   -67,   -67,    86,    87,     6,     9,    24,
+     102,   -67,   -67,   106,   -67,   -67,    88,   108,   116,   117,
+     118,   119,   -67,    30,   -14,   -67,    46,    13,    45,    55,
+      45,    55,   -67,   -67,    95,   106,   -67,   -67,    47,    47,
+      72,   -67,    27,   109,    92,   -67,    45,    45,    27,    58,
+     -67,    71,   -67,    58,   -67,   -67,   -67,   -67,    57,    97,
+      46,    47,    47,    47,   100,   120,   -67,    57,   -23,    45,
+      45,   -67,   -67,   -67,   -67,   -67,   -67,    55,   -67,   -67,
+     -67,   103,   103,   -67,    46,   -67,   -67,   111,   -67,   -67,
+      74,   104,   -67
 };
 
 /* YYDEFACT[STATE-NUM] -- Default reduction number in state STATE-NUM.
@@ -749,87 +771,123 @@ static const yytype_int8 yypact[] =
    means the default is an error.  */
 static const yytype_int8 yydefact[] =
 {
-       0,     0,     0,     0,     0,     0,     4,     0,     2,     0,
-       6,     8,     9,    10,    11,    12,    13,    14,    15,     0,
-       0,     0,     0,     0,     0,     0,     0,     1,     3,     5,
-       7,     0,     0,    19,    18,    22,     0,     0,     0,    16,
-       0,    17,    21,     0,     0,     0,     0,    23,     0,    29,
-       0,    26,    25,     0,     0,    34,    33,     0,    31,     0,
-       0,    20,    24,     0,     0,     0,    30,    27,    32,     0,
-       0,     0,    28
+       0,     0,     0,     0,     0,     0,     0,     4,     0,     0,
+       2,     0,     6,     8,     9,    10,    11,    12,    13,    14,
+      15,    16,     0,     0,     0,     0,     0,     0,     0,     0,
+       0,    30,     0,     0,     0,     1,     3,     5,     7,    36,
+       0,     0,    20,    19,    23,     0,     0,     0,     0,     0,
+       0,    45,    17,     0,    18,    22,     0,     0,    39,    43,
+      40,    44,    31,     0,     0,    24,     0,     0,     0,     0,
+       0,     0,    27,    26,     0,     0,    35,    52,     0,     0,
+       0,    32,    34,     0,    62,    60,     0,     0,    59,    37,
+      57,     0,    41,    38,    42,    21,    25,    51,     0,     0,
+       0,     0,     0,     0,     0,     0,    56,    59,     0,     0,
+       0,    67,    64,    63,    66,    65,    68,     0,    50,    28,
+      33,    46,    47,    48,     0,    61,    55,    53,    54,    58,
+       0,     0,    29
 };
 
 /* YYPGOTO[NTERM-NUM].  */
-static const yytype_int8 yypgoto[] =
+static const yytype_int16 yypgoto[] =
 {
-     -42,   -42,    53,   -42,    52,   -42,   -42,   -42,   -42,   -42,
-     -42,   -42,   -42,    16,   -42,   -42,    -4,    -2
+     -67,   -67,   131,   -67,   133,   -67,   -67,   -67,   -67,   -67,
+     -67,   -67,   -67,    75,   -67,    90,    22,    48,   -67,    -7,
+     -66,   -60,    42,    32,   -67
 };
 
 /* YYDEFGOTO[NTERM-NUM].  */
 static const yytype_int8 yydefgoto[] =
 {
-       0,     7,     8,     9,    10,    11,    12,    13,    14,    15,
-      16,    17,    46,    47,    18,    50,    57,    58
+       0,     9,    10,    11,    12,    13,    14,    15,    16,    17,
+      18,    19,    64,    65,    20,    33,    80,    81,    21,    22,
+      88,    89,    90,    91,   117
 };
 
 /* YYTABLE[YYPACT[STATE-NUM]] -- What to do in state STATE-NUM.  If
    positive, shift that token.  If negative, reduce the rule whose
    number is the opposite.  If YYTABLE_NINF, syntax error.  */
-static const yytype_int8 yytable[] =
+static const yytype_uint8 yytable[] =
 {
-      43,    27,    53,    54,     1,     2,     3,     4,     1,     2,
-       3,     4,     5,    19,    21,    20,     5,     1,     2,     3,
-       4,    51,     6,    26,    52,     5,     6,    31,    22,    44,
-      23,    24,    55,    25,    56,    29,    59,    60,    63,    64,
-      71,    64,    32,    33,    34,    36,    37,    65,    35,    38,
-      39,    45,    40,    41,    42,    49,    66,    48,    61,    67,
-      28,    30,    68,    69,     0,    70,    72,     0,     0,     0,
-      62
+      82,    34,     6,    35,   109,   110,     1,     2,     3,     4,
+      93,    49,    97,    98,     5,     1,     2,     3,     4,    56,
+     126,   107,     6,     5,     7,     8,   106,   108,     6,    74,
+      75,     6,    58,     7,    82,   121,   122,   123,    31,    25,
+      50,    59,    61,     6,    23,     8,    24,    60,    57,   127,
+     128,     8,    72,    32,     8,    73,    83,    50,    82,     1,
+       2,     3,     4,   101,   102,   103,     8,     5,    84,    85,
+      76,    77,    77,    77,    86,     6,    30,    37,    84,    85,
+      39,    77,    78,    78,    78,   109,   110,    87,    79,    79,
+      40,    41,    78,   101,   102,   103,    48,    79,     8,    45,
+     118,   111,   112,   113,   114,   115,   116,    26,    28,    27,
+      29,    92,    46,    94,    42,    99,   100,   131,   100,    43,
+      44,    47,   104,    51,    52,    62,    53,    54,    55,    63,
+      66,    31,    68,    69,    70,    71,    95,   105,   119,   110,
+      36,   103,   124,   125,    38,   132,   130,    67,   120,   129,
+      96
 };
 
 static const yytype_int8 yycheck[] =
 {
-      13,     0,    43,    44,     3,     4,     5,     6,     3,     4,
-       5,     6,    11,     7,    23,     9,    11,     3,     4,     5,
-       6,    22,    21,    12,    25,    11,    21,    23,     8,    42,
-      10,     7,    24,     9,    26,    21,    43,    44,    43,    44,
-      43,    44,    23,    41,    41,    23,    23,    13,    41,    23,
-      41,    23,    42,    41,    41,    23,    23,    42,    41,    41,
-       7,     9,    64,    42,    -1,    69,    41,    -1,    -1,    -1,
-      54
+      66,     8,    19,     0,    27,    28,     3,     4,     5,     6,
+      70,    15,    78,    79,    11,     3,     4,     5,     6,    13,
+      43,    87,    19,    11,    21,    42,    86,    87,    19,    43,
+      44,    19,    23,    21,   100,   101,   102,   103,    23,    23,
+      44,    48,    49,    19,     7,    42,     9,    23,    42,   109,
+     110,    42,    22,    38,    42,    25,    43,    44,   124,     3,
+       4,     5,     6,    36,    37,    38,    42,    11,    23,    24,
+      24,    26,    26,    26,    29,    19,    12,    21,    23,    24,
+      41,    26,    37,    37,    37,    27,    28,    42,    42,    42,
+      23,    23,    37,    36,    37,    38,    15,    42,    42,    23,
+      43,    30,    31,    32,    33,    34,    35,     8,     7,    10,
+       9,    69,    23,    71,    41,    43,    44,    43,    44,    41,
+      41,    23,    13,    43,    41,    23,    42,    41,    41,    23,
+      42,    23,    16,    16,    16,    16,    41,    45,    41,    28,
+       9,    38,    42,    23,    11,    41,   124,    57,   100,   117,
+      75
 };
 
 /* YYSTOS[STATE-NUM] -- The symbol kind of the accessing symbol of
    state STATE-NUM.  */
 static const yytype_int8 yystos[] =
 {
-       0,     3,     4,     5,     6,    11,    21,    46,    47,    48,
-      49,    50,    51,    52,    53,    54,    55,    56,    59,     7,
-       9,    23,     8,    10,     7,     9,    12,     0,    47,    21,
-      49,    23,    23,    41,    41,    41,    23,    23,    23,    41,
-      42,    41,    41,    13,    42,    23,    57,    58,    42,    23,
-      60,    22,    25,    43,    44,    24,    26,    61,    62,    43,
-      44,    41,    58,    43,    44,    13,    23,    41,    62,    42,
-      61,    43,    41
+       0,     3,     4,     5,     6,    11,    19,    21,    42,    47,
+      48,    49,    50,    51,    52,    53,    54,    55,    56,    57,
+      60,    64,    65,     7,     9,    23,     8,    10,     7,     9,
+      12,    23,    38,    61,    65,     0,    48,    21,    50,    41,
+      23,    23,    41,    41,    41,    23,    23,    23,    15,    15,
+      44,    43,    41,    42,    41,    41,    13,    42,    23,    65,
+      23,    65,    23,    23,    58,    59,    42,    61,    16,    16,
+      16,    16,    22,    25,    43,    44,    24,    26,    37,    42,
+      62,    63,    66,    43,    23,    24,    29,    42,    66,    67,
+      68,    69,    68,    67,    68,    41,    59,    66,    66,    43,
+      44,    36,    37,    38,    13,    45,    67,    66,    67,    27,
+      28,    30,    31,    32,    33,    34,    35,    70,    43,    41,
+      63,    66,    66,    66,    42,    23,    43,    67,    67,    69,
+      62,    43,    41
 };
 
 /* YYR1[RULE-NUM] -- Symbol kind of the left-hand side of rule RULE-NUM.  */
 static const yytype_int8 yyr1[] =
 {
-       0,    45,    46,    46,    47,    47,    48,    48,    49,    49,
-      49,    49,    49,    49,    49,    49,    50,    51,    52,    53,
-      54,    55,    56,    57,    57,    58,    58,    59,    59,    60,
-      60,    61,    61,    62,    62
+       0,    46,    47,    47,    48,    48,    49,    49,    50,    50,
+      50,    50,    50,    50,    50,    50,    50,    51,    52,    53,
+      54,    55,    56,    57,    58,    58,    59,    59,    60,    60,
+      61,    61,    62,    62,    63,    63,    64,    65,    65,    65,
+      65,    65,    65,    65,    65,    65,    66,    66,    66,    66,
+      66,    66,    66,    67,    67,    67,    67,    67,    68,    69,
+      69,    69,    69,    70,    70,    70,    70,    70,    70
 };
 
 /* YYR2[RULE-NUM] -- Number of symbols on the right-hand side of rule RULE-NUM.  */
 static const yytype_int8 yyr2[] =
 {
        0,     2,     1,     2,     1,     2,     1,     2,     1,     1,
-       1,     1,     1,     1,     1,     1,     4,     4,     3,     3,
-       7,     4,     3,     1,     3,     2,     2,     8,    11,     1,
-       3,     1,     3,     1,     1
+       1,     1,     1,     1,     1,     1,     1,     4,     4,     3,
+       3,     7,     4,     3,     1,     3,     2,     2,     8,    11,
+       1,     3,     1,     3,     1,     1,     2,     6,     6,     4,
+       4,     6,     6,     4,     4,     3,     3,     3,     3,     3,
+       3,     2,     1,     3,     3,     3,     2,     1,     3,     1,
+       1,     3,     1,     1,     1,     1,     1,     1,     1
 };
 
 
@@ -1293,241 +1351,523 @@ yyreduce:
   switch (yyn)
     {
   case 2: /* start: line  */
-#line 49 "ezsql.y"
+#line 54 "ezsql.y"
                 {}
-#line 1299 "y.tab.c"
+#line 1357 "y.tab.c"
     break;
 
   case 3: /* start: start line  */
-#line 50 "ezsql.y"
+#line 55 "ezsql.y"
                         {}
-#line 1305 "y.tab.c"
+#line 1363 "y.tab.c"
     break;
 
   case 4: /* line: NEWLINE  */
-#line 53 "ezsql.y"
+#line 58 "ezsql.y"
                         {std::cout<<std::endl<<"SQL>>";}
-#line 1311 "y.tab.c"
+#line 1369 "y.tab.c"
     break;
 
   case 5: /* line: statements NEWLINE  */
-#line 54 "ezsql.y"
+#line 59 "ezsql.y"
                                         {std::cout<<std::endl<<"SQL>>";}
-#line 1317 "y.tab.c"
+#line 1375 "y.tab.c"
     break;
 
   case 8: /* statement: createdb  */
-#line 61 "ezsql.y"
-                      {}
-#line 1323 "y.tab.c"
-    break;
-
-  case 9: /* statement: dropdb  */
-#line 62 "ezsql.y"
-                    {}
-#line 1329 "y.tab.c"
-    break;
-
-  case 10: /* statement: showdb  */
-#line 63 "ezsql.y"
-                    {}
-#line 1335 "y.tab.c"
-    break;
-
-  case 11: /* statement: usedb  */
-#line 64 "ezsql.y"
-                   {}
-#line 1341 "y.tab.c"
-    break;
-
-  case 12: /* statement: createtbl  */
-#line 65 "ezsql.y"
-                       {}
-#line 1347 "y.tab.c"
-    break;
-
-  case 13: /* statement: droptbl  */
 #line 66 "ezsql.y"
-                     {}
-#line 1353 "y.tab.c"
-    break;
-
-  case 14: /* statement: showtbl  */
-#line 67 "ezsql.y"
-                     {}
-#line 1359 "y.tab.c"
-    break;
-
-  case 15: /* statement: tblinsert  */
-#line 68 "ezsql.y"
-                       {}
-#line 1365 "y.tab.c"
-    break;
-
-  case 16: /* createdb: CREATE DATABASE ID ';'  */
-#line 73 "ezsql.y"
-                                     {
-    create_database((yyvsp[-1].str));
-}
-#line 1373 "y.tab.c"
-    break;
-
-  case 17: /* dropdb: DROP DATABASE ID ';'  */
-#line 78 "ezsql.y"
-                                 {
-    drop_database((yyvsp[-1].str));
-}
+                      {}
 #line 1381 "y.tab.c"
     break;
 
-  case 18: /* showdb: SHOW DATABASES ';'  */
-#line 83 "ezsql.y"
-                               {
-    show_databases();
-}
-#line 1389 "y.tab.c"
+  case 9: /* statement: dropdb  */
+#line 67 "ezsql.y"
+                    {}
+#line 1387 "y.tab.c"
     break;
 
-  case 19: /* usedb: USE ID ';'  */
-#line 88 "ezsql.y"
-                       {
-    use_database((yyvsp[-1].str));
-}
-#line 1397 "y.tab.c"
+  case 10: /* statement: showdb  */
+#line 68 "ezsql.y"
+                    {}
+#line 1393 "y.tab.c"
     break;
 
-  case 20: /* createtbl: CREATE TABLE ID '(' nametypes ')' ';'  */
-#line 93 "ezsql.y"
-                                                    {
-    create_table((yyvsp[-4].str), (yyvsp[-2].tblheaders));
-}
+  case 11: /* statement: usedb  */
+#line 69 "ezsql.y"
+                   {}
+#line 1399 "y.tab.c"
+    break;
+
+  case 12: /* statement: createtbl  */
+#line 70 "ezsql.y"
+                       {}
 #line 1405 "y.tab.c"
     break;
 
-  case 21: /* droptbl: DROP TABLE ID ';'  */
-#line 98 "ezsql.y"
+  case 13: /* statement: droptbl  */
+#line 71 "ezsql.y"
+                     {}
+#line 1411 "y.tab.c"
+    break;
+
+  case 14: /* statement: showtbl  */
+#line 72 "ezsql.y"
+                     {}
+#line 1417 "y.tab.c"
+    break;
+
+  case 15: /* statement: tblinsert  */
+#line 73 "ezsql.y"
+                       {}
+#line 1423 "y.tab.c"
+    break;
+
+  case 16: /* statement: selecttbl  */
+#line 74 "ezsql.y"
+                       {}
+#line 1429 "y.tab.c"
+    break;
+
+  case 17: /* createdb: CREATE DATABASE ID ';'  */
+#line 79 "ezsql.y"
+                                     {
+    create_database((yyvsp[-1].str));
+}
+#line 1437 "y.tab.c"
+    break;
+
+  case 18: /* dropdb: DROP DATABASE ID ';'  */
+#line 84 "ezsql.y"
+                                 {
+    drop_database((yyvsp[-1].str));
+}
+#line 1445 "y.tab.c"
+    break;
+
+  case 19: /* showdb: SHOW DATABASES ';'  */
+#line 89 "ezsql.y"
+                               {
+    show_databases();
+}
+#line 1453 "y.tab.c"
+    break;
+
+  case 20: /* usedb: USE ID ';'  */
+#line 94 "ezsql.y"
+                       {
+    use_database((yyvsp[-1].str));
+}
+#line 1461 "y.tab.c"
+    break;
+
+  case 21: /* createtbl: CREATE TABLE ID '(' nametypes ')' ';'  */
+#line 99 "ezsql.y"
+                                                    {
+    create_table((yyvsp[-4].str), (yyvsp[-2].tblheaders));
+}
+#line 1469 "y.tab.c"
+    break;
+
+  case 22: /* droptbl: DROP TABLE ID ';'  */
+#line 104 "ezsql.y"
                             {
     drop_table((yyvsp[-1].str));
 }
-#line 1413 "y.tab.c"
+#line 1477 "y.tab.c"
     break;
 
-  case 22: /* showtbl: SHOW TABLES ';'  */
-#line 103 "ezsql.y"
+  case 23: /* showtbl: SHOW TABLES ';'  */
+#line 109 "ezsql.y"
                           {
     show_tables();
 }
-#line 1421 "y.tab.c"
+#line 1485 "y.tab.c"
     break;
 
-  case 23: /* nametypes: nametype  */
-#line 108 "ezsql.y"
+  case 24: /* nametypes: nametype  */
+#line 114 "ezsql.y"
                        {
     (yyval.tblheaders) = new std::list<tableheader*>();
     (yyval.tblheaders)->push_back((yyvsp[0].tblheader));
 }
-#line 1430 "y.tab.c"
+#line 1494 "y.tab.c"
     break;
 
-  case 24: /* nametypes: nametypes ',' nametype  */
-#line 112 "ezsql.y"
+  case 25: /* nametypes: nametypes ',' nametype  */
+#line 118 "ezsql.y"
                                      {
     (yyval.tblheaders) = (yyvsp[-2].tblheaders);
     (yyval.tblheaders)->push_back((yyvsp[0].tblheader));
 }
-#line 1439 "y.tab.c"
+#line 1503 "y.tab.c"
     break;
 
-  case 25: /* nametype: ID CHAR  */
-#line 118 "ezsql.y"
+  case 26: /* nametype: ID CHAR  */
+#line 124 "ezsql.y"
                       {
     (yyval.tblheader) = new tableheader();
     (yyval.tblheader)->type = (yyvsp[0].num);
     (yyval.tblheader)->colname = (yyvsp[-1].str);
 }
-#line 1449 "y.tab.c"
+#line 1513 "y.tab.c"
     break;
 
-  case 26: /* nametype: ID INT  */
-#line 123 "ezsql.y"
+  case 27: /* nametype: ID INT  */
+#line 129 "ezsql.y"
                      {
     (yyval.tblheader) = new tableheader();
     (yyval.tblheader)->type = 0;
     (yyval.tblheader)->colname = (yyvsp[-1].str);
 }
-#line 1459 "y.tab.c"
+#line 1523 "y.tab.c"
     break;
 
-  case 27: /* tblinsert: INSERT INTO ID VALUES '(' vals ')' ';'  */
-#line 130 "ezsql.y"
+  case 28: /* tblinsert: INSERT INTO ID VALUES '(' vals ')' ';'  */
+#line 136 "ezsql.y"
                                                       {
     table_insert((yyvsp[-5].str), (yyvsp[-2].datas));
 }
-#line 1467 "y.tab.c"
+#line 1531 "y.tab.c"
     break;
 
-  case 28: /* tblinsert: INSERT INTO ID '(' names ')' VALUES '(' vals ')' ';'  */
-#line 133 "ezsql.y"
+  case 29: /* tblinsert: INSERT INTO ID '(' names ')' VALUES '(' vals ')' ';'  */
+#line 139 "ezsql.y"
                                                                    {
     table_insert((yyvsp[-8].str), (yyvsp[-2].datas), (yyvsp[-6].strlist));
 }
-#line 1475 "y.tab.c"
+#line 1539 "y.tab.c"
     break;
 
-  case 29: /* names: ID  */
-#line 138 "ezsql.y"
+  case 30: /* names: ID  */
+#line 144 "ezsql.y"
              {
     (yyval.strlist) = new list<string>();
     (yyval.strlist)->push_back((yyvsp[0].str));
 }
-#line 1484 "y.tab.c"
+#line 1548 "y.tab.c"
     break;
 
-  case 30: /* names: names ',' ID  */
-#line 142 "ezsql.y"
+  case 31: /* names: names ',' ID  */
+#line 148 "ezsql.y"
                        {
     (yyval.strlist) = (yyvsp[-2].strlist);
     (yyval.strlist)->push_back((yyvsp[0].str));
 }
-#line 1493 "y.tab.c"
+#line 1557 "y.tab.c"
     break;
 
-  case 31: /* vals: val  */
-#line 148 "ezsql.y"
+  case 32: /* vals: val  */
+#line 154 "ezsql.y"
               {
-    (yyval.datas) = new list<char *>();
+    (yyval.datas) = new std::list<char *>();
     (yyval.datas)->push_back((yyvsp[0].data));
 }
-#line 1502 "y.tab.c"
+#line 1566 "y.tab.c"
     break;
 
-  case 32: /* vals: vals ',' val  */
-#line 152 "ezsql.y"
+  case 33: /* vals: vals ',' val  */
+#line 158 "ezsql.y"
                        {
     (yyval.datas) = (yyvsp[-2].datas);
     (yyvsp[-2].datas)->push_back((yyvsp[0].data));
 }
-#line 1511 "y.tab.c"
+#line 1575 "y.tab.c"
     break;
 
-  case 33: /* val: NUMBER  */
-#line 158 "ezsql.y"
-             {
+  case 34: /* val: cal  */
+#line 164 "ezsql.y"
+          {
     (yyval.data) = mkchar((yyvsp[0].num));
 }
-#line 1519 "y.tab.c"
+#line 1583 "y.tab.c"
     break;
 
-  case 34: /* val: STRING  */
-#line 161 "ezsql.y"
+  case 35: /* val: STRING  */
+#line 167 "ezsql.y"
              {
     (yyval.data) = mkchar((yyvsp[0].str));
 }
-#line 1527 "y.tab.c"
+#line 1591 "y.tab.c"
+    break;
+
+  case 36: /* selecttbl: temptbl ';'  */
+#line 172 "ezsql.y"
+                          {
+    table_show(*(yyvsp[-1].tbl));
+}
+#line 1599 "y.tab.c"
+    break;
+
+  case 37: /* temptbl: SELECT '*' FROM ID WHERE conditions  */
+#line 177 "ezsql.y"
+                                                {
+    (yyval.tbl) = new table();
+    *(yyval.tbl) = get_table((yyvsp[-2].str));
+    table_select(*(yyval.tbl), (yyvsp[0].cond));
+}
+#line 1609 "y.tab.c"
+    break;
+
+  case 38: /* temptbl: SELECT names FROM ID WHERE conditions  */
+#line 182 "ezsql.y"
+                                                    {
+    (yyval.tbl) = new table();
+    *(yyval.tbl) = get_table((yyvsp[-2].str));
+    table_select(*(yyval.tbl), (yyvsp[0].cond));
+    table_reduce(*(yyval.tbl), *(yyvsp[-4].strlist));
+}
+#line 1620 "y.tab.c"
+    break;
+
+  case 39: /* temptbl: SELECT '*' FROM ID  */
+#line 188 "ezsql.y"
+                                 {
+    (yyval.tbl) = new table();
+    *(yyval.tbl) = get_table((yyvsp[0].str));
+}
+#line 1629 "y.tab.c"
+    break;
+
+  case 40: /* temptbl: SELECT names FROM ID  */
+#line 192 "ezsql.y"
+                                   {
+    (yyval.tbl) = new table();
+    *(yyval.tbl) = get_table((yyvsp[0].str));
+    table_reduce(*(yyval.tbl), *(yyvsp[-2].strlist));
+}
+#line 1639 "y.tab.c"
+    break;
+
+  case 41: /* temptbl: SELECT '*' FROM temptbl WHERE condition  */
+#line 197 "ezsql.y"
+                                                      {
+    (yyval.tbl) = (yyvsp[-2].tbl);
+    table_select(*(yyval.tbl), (yyvsp[0].cond));
+}
+#line 1648 "y.tab.c"
+    break;
+
+  case 42: /* temptbl: SELECT names FROM temptbl WHERE condition  */
+#line 201 "ezsql.y"
+                                                        {
+    (yyval.tbl) = (yyvsp[-2].tbl);
+    table_select(*(yyval.tbl), (yyvsp[0].cond));
+    table_reduce(*(yyval.tbl), *(yyvsp[-4].strlist));
+}
+#line 1658 "y.tab.c"
+    break;
+
+  case 43: /* temptbl: SELECT '*' FROM temptbl  */
+#line 206 "ezsql.y"
+                                      {
+    (yyval.tbl) = (yyvsp[0].tbl);
+}
+#line 1666 "y.tab.c"
+    break;
+
+  case 44: /* temptbl: SELECT names FROM temptbl  */
+#line 209 "ezsql.y"
+                                        {
+    (yyval.tbl) = (yyvsp[0].tbl);
+    table_reduce(*(yyval.tbl), *(yyvsp[-2].strlist));   
+}
+#line 1675 "y.tab.c"
+    break;
+
+  case 45: /* temptbl: '(' temptbl ')'  */
+#line 213 "ezsql.y"
+                              {
+    (yyval.tbl) = (yyvsp[-1].tbl);
+}
+#line 1683 "y.tab.c"
+    break;
+
+  case 46: /* cal: cal '+' cal  */
+#line 218 "ezsql.y"
+                  { (yyval.num) = (yyvsp[-2].num) + (yyvsp[0].num);}
+#line 1689 "y.tab.c"
+    break;
+
+  case 47: /* cal: cal '-' cal  */
+#line 219 "ezsql.y"
+                      { (yyval.num) = (yyvsp[-2].num) - (yyvsp[0].num);}
+#line 1695 "y.tab.c"
+    break;
+
+  case 48: /* cal: cal '*' cal  */
+#line 220 "ezsql.y"
+                      { (yyval.num) = (yyvsp[-2].num) * (yyvsp[0].num);}
+#line 1701 "y.tab.c"
+    break;
+
+  case 49: /* cal: cal '-' cal  */
+#line 221 "ezsql.y"
+                      { (yyval.num) = (yyvsp[-2].num) / (yyvsp[0].num);}
+#line 1707 "y.tab.c"
+    break;
+
+  case 50: /* cal: '(' cal ')'  */
+#line 222 "ezsql.y"
+                      { (yyval.num) = (yyvsp[-1].num);}
+#line 1713 "y.tab.c"
+    break;
+
+  case 51: /* cal: '-' cal  */
+#line 223 "ezsql.y"
+                               { (yyval.num) = - (yyvsp[0].num);}
+#line 1719 "y.tab.c"
+    break;
+
+  case 52: /* cal: NUMBER  */
+#line 224 "ezsql.y"
+                 {(yyval.num) = (yyvsp[0].num);}
+#line 1725 "y.tab.c"
+    break;
+
+  case 53: /* conditions: conditions OR conditions  */
+#line 227 "ezsql.y"
+                                                {
+	(yyval.cond) = new condition();
+    (yyval.cond)->type = 2;
+    (yyval.cond)->opt = 1;
+    (yyval.cond)->left = (yyvsp[-2].cond);
+    (yyval.cond)->right = (yyvsp[0].cond);
+}
+#line 1737 "y.tab.c"
+    break;
+
+  case 54: /* conditions: conditions AND conditions  */
+#line 234 "ezsql.y"
+                                                        {
+	(yyval.cond) = new condition();
+    (yyval.cond)->type = 2;
+    (yyval.cond)->opt = 2;
+    (yyval.cond)->left = (yyvsp[-2].cond);
+    (yyval.cond)->right = (yyvsp[0].cond);
+}
+#line 1749 "y.tab.c"
+    break;
+
+  case 55: /* conditions: '(' conditions ')'  */
+#line 241 "ezsql.y"
+                                             { (yyval.cond) = (yyvsp[-1].cond);}
+#line 1755 "y.tab.c"
+    break;
+
+  case 56: /* conditions: NOT conditions  */
+#line 242 "ezsql.y"
+                                                {
+	(yyval.cond) = new condition();
+    (yyval.cond)->type = 2;
+    (yyval.cond)->opt = 3;
+    (yyval.cond)->left = NULL;
+    (yyval.cond)->right = (yyvsp[0].cond);
+}
+#line 1767 "y.tab.c"
+    break;
+
+  case 57: /* conditions: condition  */
+#line 249 "ezsql.y"
+                                    {
+	(yyval.cond) = (yyvsp[0].cond);
+}
+#line 1775 "y.tab.c"
+    break;
+
+  case 58: /* condition: condtype compare condtype  */
+#line 254 "ezsql.y"
+                                                {
+	(yyval.cond) = new condition();
+    (yyval.cond)->left = (yyvsp[-2].cond);
+    (yyval.cond)->right = (yyvsp[0].cond);
+	(yyval.cond)->type = 1;
+    (yyval.cond)->opt = (yyvsp[-1].num);
+}
+#line 1787 "y.tab.c"
+    break;
+
+  case 59: /* condtype: cal  */
+#line 263 "ezsql.y"
+                      {
+	(yyval.cond) = new condition();
+    (yyval.cond)->type = 3;
+    (yyval.cond)->opt = 1;
+	(yyval.cond)->num = (yyvsp[0].num);
+}
+#line 1798 "y.tab.c"
+    break;
+
+  case 60: /* condtype: STRING  */
+#line 269 "ezsql.y"
+                                 {
+	(yyval.cond) = new condition();
+	(yyval.cond)->type = 3;
+    (yyval.cond)->opt = 2;
+	(yyval.cond)->str = (yyvsp[0].str);
+}
+#line 1809 "y.tab.c"
+    break;
+
+  case 61: /* condtype: ID '.' ID  */
+#line 275 "ezsql.y"
+                                    {
+	(yyval.cond) = new condition();
+	(yyval.cond)->type = 3;
+    (yyval.cond)->opt = 3;
+	(yyval.cond)->colname = (yyvsp[-2].str);
+}
+#line 1820 "y.tab.c"
+    break;
+
+  case 62: /* condtype: ID  */
+#line 281 "ezsql.y"
+                 {
+    (yyval.cond) = new condition();
+	(yyval.cond)->type = 3;
+    (yyval.cond)->opt = 3;
+	(yyval.cond)->colname = (yyvsp[0].str);
+}
+#line 1831 "y.tab.c"
+    break;
+
+  case 63: /* compare: '<'  */
+#line 289 "ezsql.y"
+                { (yyval.num) = 1;}
+#line 1837 "y.tab.c"
+    break;
+
+  case 64: /* compare: '>'  */
+#line 290 "ezsql.y"
+                        { (yyval.num) = 2;}
+#line 1843 "y.tab.c"
+    break;
+
+  case 65: /* compare: NOTGREATER  */
+#line 291 "ezsql.y"
+                                { (yyval.num) = 3;}
+#line 1849 "y.tab.c"
+    break;
+
+  case 66: /* compare: NOTLESS  */
+#line 292 "ezsql.y"
+                                { (yyval.num) = 4;}
+#line 1855 "y.tab.c"
+    break;
+
+  case 67: /* compare: '='  */
+#line 293 "ezsql.y"
+                        { (yyval.num) = 5;}
+#line 1861 "y.tab.c"
+    break;
+
+  case 68: /* compare: NOTEQUAL  */
+#line 294 "ezsql.y"
+                                { (yyval.num) = 6;}
+#line 1867 "y.tab.c"
     break;
 
 
-#line 1531 "y.tab.c"
+#line 1871 "y.tab.c"
 
       default: break;
     }
@@ -1720,4 +2060,4 @@ yyreturnlab:
   return yyresult;
 }
 
-#line 168 "ezsql.y"
+#line 297 "ezsql.y"

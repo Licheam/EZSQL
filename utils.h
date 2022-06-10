@@ -3,6 +3,7 @@
 #include <iostream>
 #include <string>
 
+std::string parse(const char *s);
 void mkdir(std::string path);
 void rmdir(std::string path);
 void rm(std::string path);

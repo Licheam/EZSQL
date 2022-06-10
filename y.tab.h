@@ -41,8 +41,8 @@
 #include <list>
 #include "database.h"
 #include "table.h"
+#include "condition.h"
 #include "utils.h"
-
 /* Debug traces.  */
 #ifndef YYDEBUG
 # define YYDEBUG 0
@@ -135,7 +135,7 @@ extern int yydebug;
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 17 "ezsql.y"
+#line 18 "ezsql.y"
 
 	char *str;
     int num;
@@ -144,8 +144,10 @@ union YYSTYPE
     std::list<std::string> *strlist;
     char *data;
     std::list<char *> *datas;
+    condition *cond;
+    table *tbl;
 
-#line 143 "y.tab.h"
+#line 145 "y.tab.h"
 
 };
 typedef union YYSTYPE YYSTYPE;

@@ -2,6 +2,7 @@
 #include <list>
 #include "database.h"
 #include "table.h"
+#include "condition.h"
 #include "utils.h"
 
 using namespace std;
@@ -23,6 +24,7 @@ void yyerror(const char *str){
     char *data;
     std::list<char *> *datas;
     condition *cond;
+    table *tbl;
 }
 
 %token CREATE USE SHOW DROP DATABASE DATABASES TABLE TABLES INSERT INTO VALUES DELETE
@@ -38,6 +40,7 @@ void yyerror(const char *str){
 %type<data> val
 %type<datas> vals
 %type<cond> conditions condition condtype
+%type<tbl> temptbl
 
 %left OR
 %left AND
@@ -149,7 +152,7 @@ names   : ID {
 ;
 
 vals    : val {
-    $$ = new list<char *>();
+    $$ = new std::list<char *>();
     $$->push_back($1);
 }
         | vals ',' val {
@@ -167,18 +170,48 @@ val : cal {
 ;
 
 selecttbl   : temptbl ';' {
-
+    table_show(*$1);
 }
 ;
 
-temptbl   : SELECT '*' FROM ID WHERE  {
-
+temptbl   : SELECT '*' FROM ID WHERE conditions {
+    $$ = new table();
+    *$$ = get_table($4);
+    table_select(*$$, $6);
+}
+            | SELECT names FROM ID WHERE conditions {
+    $$ = new table();
+    *$$ = get_table($4);
+    table_select(*$$, $6);
+    table_reduce(*$$, *$2);
 }
             | SELECT '*' FROM ID {
-
+    $$ = new table();
+    *$$ = get_table($4);
 }
             | SELECT names FROM ID {
-
+    $$ = new table();
+    *$$ = get_table($4);
+    table_reduce(*$$, *$2);
+}
+            | SELECT '*' FROM temptbl WHERE condition {
+    $$ = $4;
+    table_select(*$$, $6);
+}
+            | SELECT names FROM temptbl WHERE condition {
+    $$ = $4;
+    table_select(*$$, $6);
+    table_reduce(*$$, *$2);
+}
+            | SELECT '*' FROM temptbl {
+    $$ = $4;
+}
+            | SELECT names FROM temptbl {
+    $$ = $4;
+    table_reduce(*$$, *$2);   
+}
+            | '(' temptbl ')' {
+    $$ = $2;
 }
 ;
 
@@ -188,7 +221,7 @@ cal : cal '+' cal { $$ = $1 + $3;}
 	| cal '-' cal { $$ = $1 / $3;}
 	| '(' cal ')' { $$ = $2;}
 	| '-' cal %prec UMINUS { $$ = - $2;}
-	| NUMBER {$$ = $1}
+	| NUMBER {$$ = $1;}
 ;
 
 conditions 	: conditions OR conditions	{
@@ -211,7 +244,7 @@ conditions 	: conditions OR conditions	{
     $$->type = 2;
     $$->opt = 3;
     $$->left = NULL;
-    $$->right = $3;
+    $$->right = $2;
 }
 			| condition {
 	$$ = $1;
@@ -220,26 +253,36 @@ conditions 	: conditions OR conditions	{
 
 condition 	: condtype compare condtype	{
 	$$ = new condition();
+    $$->left = $1;
+    $$->right = $3;
 	$$->type = 1;
-    $$->opt = compare;
+    $$->opt = $2;
 }
 ;
 
 condtype	: cal {
 	$$ = new condition();
-	$$ -> type = 1;
-	$$ -> digits = $1;
+    $$->type = 3;
+    $$->opt = 1;
+	$$->num = $1;
 }
 			| STRING {
 	$$ = new condition();
-	$$ -> type = 2;
-	$$ -> str = $1 -> getStringValue();
+	$$->type = 3;
+    $$->opt = 2;
+	$$->str = $1;
 }			
 			| ID '.' ID {
-	$$ = $3;
+	$$ = new condition();
+	$$->type = 3;
+    $$->opt = 3;
+	$$->colname = $1;
 }
             | ID {
-    $$ = $1;
+    $$ = new condition();
+	$$->type = 3;
+    $$->opt = 3;
+	$$->colname = $1;
 }
 ;
 

@@ -34,3 +34,13 @@ char* mkchar(int x) {
     *t = 0;
     return t;
 }
+
+string parse(const char *s) {
+    if(*s) {
+        return string(s+1);
+    } else {
+        int *x = (int*)malloc(4);
+        strncpy((char*)x, s+1, 4);
+        return to_string(*x);
+    }
+}

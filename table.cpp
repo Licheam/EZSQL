@@ -1,5 +1,6 @@
-#include "table.h"
 #include "database.h"
+#include "table.h"
+#include "condition.h"
 using namespace std;
 
 #define PATH ("./" + dbusing + "/tables")
@@ -12,16 +13,6 @@ void updates(list<string>& names) {
         fputs(s.c_str(), f); fputs("\n", f);
     }
     fclose(f);
-}
-
-string parse(const char *s) {
-    if(*s) {
-        return string(s);
-    } else {
-        int *x = (int*)malloc(4);
-        strncpy((char*)x, s+1, 4);
-        return to_string(*x);
-    }
 }
 
 void write_nxt(FILE *f, const char *s) {
@@ -187,4 +178,78 @@ void table_insert(std::string tblname, std::list<char *> *vals, std::list<string
     }
     tbl.vallist.push_back(fvals);
     updates(tbl);
+}
+
+void table_show(table &tbl) {
+    cout<<tbl.tblname<<endl;
+    for(auto &th:*(tbl.tblheaders)) {
+        cout<<th->colname<<' ';
+    }
+    cout<<endl;
+    for(auto &ll:tbl.vallist) {
+        for(auto &l:ll) {
+            cout<<parse(l)<<' ';
+        }
+        cout<<endl;
+    }
+}
+
+void table_select(table &tbl, condition *root) {
+    std::list<char *> linklist(tbl.tblheaders->size());
+    
+    links(root, *(tbl.tblheaders), linklist);
+    for(auto it = tbl.vallist.begin();it!=tbl.vallist.end();) {
+        for(auto i1=it->begin(), i2=linklist.begin();i1!=it->end() && i2!=linklist.end();i1++,i2++) {
+            *i2 = *i1;
+        }
+        if(calc(root)) {
+            it++;
+        } else it = tbl.vallist.erase(it);
+    }
+}
+
+void links(condition *cur, list<tableheader*> &ths, list<char *> &colvals) {
+    if(cur->type == 3) {
+        if(cur->opt == 3) {
+            auto i2 = colvals.begin();
+            for(auto it = ths.begin();it != ths.end() && i2 != colvals.end();it++,i2++) {
+                if((*it)->colname == cur->colname) {
+                    // cout<<"DEBUG:"<<cur->colname<<endl;
+                    cur->colval = i2;
+                    return;
+                }
+            }
+        }
+        return;
+    }
+    if(cur->left != NULL)
+        links(cur->left, ths, colvals);
+    return links(cur->right, ths, colvals);
+}
+
+void table_reduce(table &tbl, std::list<string> &colnames) {
+    std::list<std::list<char *>::iterator> its;
+    for(auto &x:tbl.vallist) its.push_back(x.begin());
+    for(auto it = tbl.tblheaders->begin(); it!=tbl.tblheaders->end();) {
+        bool to_reduce=true;
+        for(auto &s:colnames) {
+            if(s==(*it)->colname) {
+                to_reduce = false;
+                break;
+            }
+        }
+        if(to_reduce) {
+            it = tbl.tblheaders->erase(it);
+            auto it2 = its.begin();
+            for(auto &x:tbl.vallist) {
+                *it2 = x.erase(*it2);
+                it2++;
+            }
+        } else {
+            it++;
+            for(auto &x:its) {
+                x++;
+            }
+        }
+    }
 }
