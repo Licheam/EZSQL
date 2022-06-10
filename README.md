@@ -24,7 +24,7 @@ make
 
 If you don't mess around with ezsql.y, y.tab.c or y.tab.h, you should be fine.
 
-But if you didn't for some reason, however, there is something you might need to do to fix in the following.
+But if you did for some reason, however, there is something you might need to do to fix in the following.
 
 If you find yourself with error like when compiling the y.tab.o into main :
 
