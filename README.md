@@ -45,7 +45,7 @@ There is something that you need to fix manually. You need to put the following 
 #include "utils.h"
 ```
 
-# Syntax Supported
+## Syntax Supported
 
 There are only 2 types supported: INT and CHAR(1~255).
 CHAR(x) is only allow in one format: '[VALUES]' (always wrap with single quotes)
@@ -72,9 +72,9 @@ SELECT [ID], ... FROM [ID];
 SELECT ... FROM [ID] WHERE [CONDITION];
 SELECT ... FROM (SELECT ...) ...;
 ```
-# Notes
+## Notes
 
-This project is composed in a rush, so there is some potential bugs I have not tested. Feel free to submit them in issue. I will fix them if I am avalible.
+This project is composed in a rush, so there are likely having some potential bugs I have not tested. Feel free to submit them in issue. I will fix them if I am avalible.
 
 I may improve some functions in the future.
 
