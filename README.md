@@ -35,7 +35,7 @@ ezsql.y:22:27: error: expected expression
 ```
 
 There is something that you need to fix manually. You need to put the following lines into y.tab.h right after macro
-`# define YY_YY_Y_TAB_H_INCLUDED`.
+`# define YY_YY_Y_TAB_H_INCLUDED`, then make again.
 
 ```c++
 #include <list>
